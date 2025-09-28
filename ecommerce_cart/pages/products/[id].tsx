@@ -1,11 +1,11 @@
 import { GetServerSideProps } from "next";
 import { Product } from "../../lib/api";
-import { useProductsContext } from "../../context/ProductsContext";
+import { useProducts} from "../../context/ProductsContext";
 
 type Props = { product: Product };
 
 export default function ProductDetail({ product }: Props) {
-  const { addToCart } = useProductsContext();
+  const { addToCart } = useProducts();
 
   return (
     <div className="max-w-5xl mx-auto p-6">
