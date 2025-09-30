@@ -1,17 +1,16 @@
-import React, { createContext, useContext, useReducer, ReactNode } from "react";
+import React, { createContext, useContext, useReducer, ReactNode, useMemo } from "react";
 import { Product } from "../interfaces/product";
 
-// Define the shape of our state
+// State shape
 interface State {
   products: Product[];
   total: number;
   loading: boolean;
   error: string | null;
   category: string | null;
-  sort: "asc" | "desc" | null;
+  sort: "price-asc" | "price-desc" | null;
 }
 
-// Initial state
 const initialState: State = {
   products: [],
   total: 0,
@@ -31,7 +30,7 @@ type Action =
   | { type: "SET_SORT"; payload?: State["sort"] }
   | { type: "RESET" };
 
-// Reducer function
+// Reducer
 function reducer(state: State, action: Action): State {
   switch (action.type) {
     case "SET_LOADING":
@@ -57,12 +56,37 @@ function reducer(state: State, action: Action): State {
 const ProductContext = createContext<{
   state: State;
   dispatch: React.Dispatch<Action>;
+  filteredProducts: Product[];
 } | null>(null);
 
 // Provider
 export const ProductProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  return <ProductContext.Provider value={{ state, dispatch }}>{children}</ProductContext.Provider>;
+
+  // 👇 Apply filtering + sorting dynamically
+  const filteredProducts = useMemo(() => {
+    let result = [...state.products];
+
+    // filter by category
+    if (state.category) {
+      result = result.filter((p) => p.category === state.category);
+    }
+
+    // sort by price
+    if (state.sort === "price-asc") {
+      result.sort((a, b) => a.price - b.price);
+    } else if (state.sort === "price-desc") {
+      result.sort((a, b) => b.price - a.price);
+    }
+
+    return result;
+  }, [state.products, state.category, state.sort]);
+
+  return (
+    <ProductContext.Provider value={{ state, dispatch, filteredProducts }}>
+      {children}
+    </ProductContext.Provider>
+  );
 };
 
 // Hook

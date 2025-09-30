@@ -7,10 +7,9 @@ import { useProductContext } from "../context/ProductContext";
 import { Product } from "../interfaces/product";
 import Skeleton from "../components/Skeleton";
 
-
 export default function HomePage() {
-  const { state, dispatch } = useProductContext();
-  const { products, loading, error } = state;
+  const { state, dispatch, filteredProducts } = useProductContext();
+  const { loading, error } = state;
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
 
@@ -20,7 +19,10 @@ export default function HomePage() {
         dispatch({ type: "SET_LOADING", payload: true });
         const res = await fetch("https://dummyjson.com/products?limit=100");
         const data = await res.json();
-        dispatch({ type: "SET_PRODUCTS", payload: { products: data.products, total: data.total } });
+        dispatch({
+          type: "SET_PRODUCTS",
+          payload: { products: data.products, total: data.total },
+        });
       } catch (err) {
         dispatch({ type: "SET_ERROR", payload: "Failed to fetch products" });
       } finally {
@@ -33,16 +35,17 @@ export default function HomePage() {
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
   return (
     <>
       <Hero />
       <main className="max-w-7xl mx-auto p-4">
         <FilterBar />
         {error && <p className="text-center text-red-500">{error}</p>}
-  
+
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
             {Array.from({ length: productsPerPage }).map((_, i) => (
@@ -56,11 +59,11 @@ export default function HomePage() {
             ))}
           </div>
         )}
-  
+
         {!loading && (
           <Pagination
             productsPerPage={productsPerPage}
-            totalProducts={products.length}
+            totalProducts={filteredProducts.length}
             paginate={paginate}
             currentPage={currentPage}
           />
@@ -68,4 +71,4 @@ export default function HomePage() {
       </main>
     </>
   );
-  
+}
