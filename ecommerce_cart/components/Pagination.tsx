@@ -1,32 +1,49 @@
-import React from 'react';
+import React from "react";
+
 
 interface PaginationProps {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
+productsPerPage: number;
+totalProducts: number;
+paginate: (pageNumber: number) => void;
+currentPage: number;
 }
 
-export default function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
-  if (totalPages <= 1) return null;
 
-  return (
-    <div className="flex justify-center mt-6 space-x-2">
-      {Array.from({ length: totalPages }).map((_, i) => {
-        const page = i + 1;
-        return (
-          <button
-            key={page}
-            onClick={() => onPageChange(page)}
-            className={`px-3 py-1 rounded-md text-sm font-medium ${
-              page === currentPage
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-          >
-            {page}
-          </button>
-        );
-      })}
-    </div>
-  );
+const Pagination: React.FC<PaginationProps> = ({
+productsPerPage,
+totalProducts,
+paginate,
+currentPage,
+}) => {
+const pageNumbers = [];
+
+
+for (let i = 1; i <= Math.ceil(totalProducts / productsPerPage); i++) {
+pageNumbers.push(i);
 }
+
+
+return (
+<nav className="flex justify-center mt-8">
+<ul className="flex space-x-2">
+{pageNumbers.map((number) => (
+<li key={number}>
+<button
+onClick={() => paginate(number)}
+className={`px-3 py-1 rounded-lg border transition-colors duration-200 ${
+currentPage === number
+? "bg-blue-600 text-white border-blue-600"
+: "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+}`}
+>
+{number}
+</button>
+</li>
+))}
+</ul>
+</nav>
+);
+};
+
+
+export default Pagination;

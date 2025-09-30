@@ -1,6 +1,59 @@
-import ProductsPage from '../components/ProductsPage'
+import { useEffect, useState } from "react";
+import Hero from "../components/Hero";
+import ProductCard from "../components/ProductCard";
+import FilterBar from "../components/FilterBar";
+import Pagination from "../components/Pagination";
+import { useProductContext } from "../context/ProductContext";
+import { Product } from "../interfaces/product";
 
+export default function HomePage() {
+  const { state, dispatch } = useProductContext();
+  const { products, loading, error } = state;
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 12;
 
-export default function Home() {
-return <ProductsPage />
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        dispatch({ type: "SET_LOADING", payload: true });
+        const res = await fetch("https://dummyjson.com/products?limit=100");
+        const data = await res.json();
+        dispatch({ type: "SET_PRODUCTS", payload: { products: data.products, total: data.total } });
+      } catch (err) {
+        dispatch({ type: "SET_ERROR", payload: "Failed to fetch products" });
+      } finally {
+        dispatch({ type: "SET_LOADING", payload: false });
+      }
+    };
+
+    fetchProducts();
+  }, [dispatch]);
+
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  return (
+    <>
+      <Hero />
+      <main className="max-w-7xl mx-auto p-4">
+        <FilterBar />
+        {loading && <p className="text-center">Loading products...</p>}
+        {error && <p className="text-center text-red-500">{error}</p>}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+          {currentProducts.map((product: Product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+        <Pagination
+          productsPerPage={productsPerPage}
+          totalProducts={products.length}
+          paginate={paginate}
+          currentPage={currentPage}
+        />
+      </main>
+    </>
+  );
 }

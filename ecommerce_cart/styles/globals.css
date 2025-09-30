@@ -7,6 +7,6 @@ body,
     height: 100%;
 }
 
-.product-image {
-    @apply object-cover w-full h-40 rounded-md;
+body {
+    @apply bg-gray-50 text-gray-900;
 }
