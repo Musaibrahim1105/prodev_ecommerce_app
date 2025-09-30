@@ -9,6 +9,7 @@ interface State {
   error: string | null;
   category: string | null;
   sort: "price-asc" | "price-desc" | null;
+  searchQuery: string; // ✅ NEW
 }
 
 const initialState: State = {
@@ -18,6 +19,7 @@ const initialState: State = {
   error: null,
   category: null,
   sort: null,
+  searchQuery: "", // ✅ NEW
 };
 
 // Actions
@@ -28,6 +30,7 @@ type Action =
   | { type: "SET_ERROR"; payload?: string }
   | { type: "SET_CATEGORY"; payload?: string | null }
   | { type: "SET_SORT"; payload?: State["sort"] }
+  | { type: "SET_SEARCH"; payload: string } // ✅ NEW
   | { type: "RESET" };
 
 // Reducer
@@ -45,6 +48,8 @@ function reducer(state: State, action: Action): State {
       return { ...state, category: action.payload ?? null };
     case "SET_SORT":
       return { ...state, sort: action.payload ?? null };
+    case "SET_SEARCH":
+      return { ...state, searchQuery: action.payload }; // ✅ handle search
     case "RESET":
       return { ...initialState };
     default:
@@ -63,13 +68,23 @@ const ProductContext = createContext<{
 export const ProductProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // 👇 Apply filtering + sorting dynamically
+  // 👇 Apply filtering + sorting + search dynamically
   const filteredProducts = useMemo(() => {
     let result = [...state.products];
 
     // filter by category
     if (state.category) {
       result = result.filter((p) => p.category === state.category);
+    }
+
+    // ✅ filter by search query
+    if (state.searchQuery) {
+      const q = state.searchQuery.toLowerCase();
+      result = result.filter(
+        (p) =>
+          p.title.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q)
+      );
     }
 
     // sort by price
@@ -80,7 +95,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     }
 
     return result;
-  }, [state.products, state.category, state.sort]);
+  }, [state.products, state.category, state.sort, state.searchQuery]);
 
   return (
     <ProductContext.Provider value={{ state, dispatch, filteredProducts }}>

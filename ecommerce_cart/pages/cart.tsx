@@ -4,9 +4,21 @@ import { useCartContext } from "../context/CartContext";
 export default function CartPage() {
   const { state, removeFromCart, clearCart } = useCartContext();
 
+  // ✅ Calculate total
+  const total = state.items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
+  const handleCheckout = () => {
+    alert("✅ Checkout successful! (You can connect this to Paystack/Stripe later)");
+    clearCart();
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Your Cart</h1>
+
       {state.items.length === 0 ? (
         <p className="text-gray-600">Your cart is empty.</p>
       ) : (
@@ -31,12 +43,29 @@ export default function CartPage() {
             </div>
           ))}
 
-          <button
-            onClick={clearCart}
-            className="mt-4 bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800"
-          >
-            Clear Cart
-          </button>
+          {/* ✅ Cart Summary */}
+          <div className="mt-6 flex justify-between items-center">
+            <div className="text-lg font-semibold">
+              Total: ${total.toFixed(2)}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={clearCart}
+                className="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800"
+              >
+                Clear Cart
+              </button>
+
+              {/* ✅ Checkout Button */}
+              <button
+                onClick={handleCheckout}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              >
+                Checkout
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -1,5 +1,5 @@
-// components/Header.tsx
 import Link from "next/link";
+import Image from "next/image"; // ✅ Import Image component
 import { useCartContext } from "../context/CartContext";
 
 export default function Header() {
@@ -10,8 +10,15 @@ export default function Header() {
     <header className="bg-white shadow sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo */}
-        <Link href="/" className="text-2xl font-bold text-blue-600">
-          MyStore
+        <Link href="/" className="flex items-center gap-2">
+          <Image
+            src="/logo.png" // 👈 place your logo inside /public/logo.png
+            alt="MyStore Logo"
+            width={40}
+            height={40}
+            className="rounded-lg"
+          />
+          <span className="text-xl font-bold text-blue-600">MovicStore</span>
         </Link>
 
         {/* Navigation */}

@@ -9,9 +9,14 @@ import Skeleton from "../components/Skeleton";
 
 export default function HomePage() {
   const { state, dispatch, filteredProducts } = useProductContext();
-  const { loading, error } = state;
+  const { loading, error, category, sort } = state; // 👈 grab category & sort
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
+
+  // ✅ Reset to page 1 whenever filter/sort changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [category, sort]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -35,7 +40,10 @@ export default function HomePage() {
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = filteredProducts.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
