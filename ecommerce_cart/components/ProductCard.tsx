@@ -1,24 +1,43 @@
-import React from 'react';
-import { Product } from '../interfaces/product';
-
+import React from "react";
+import { Product } from "../interfaces/product";
+import { useCartContext } from "../context/CartContext";
+import Link from "next/link";
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
-return (
-<article className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col">
-<div className="h-48 w-full bg-gray-100 flex items-center justify-center">
-<img src={product.thumbnail ?? product.images?.[0]} alt={product.title} className="object-cover h-full w-full" />
-</div>
-<div className="p-4 flex-1 flex flex-col">
-<h3 className="text-sm font-semibold mb-2 truncate">{product.title}</h3>
-<p className="text-xs text-gray-500 line-clamp-2 flex-1">{product.description}</p>
-<div className="mt-4 flex items-center justify-between">
-<span className="font-bold">₦{product.price}</span>
-<button className="px-3 py-1 text-sm rounded-full border">Add</button>
-</div>
-</div>
-</article>
-);
-};
+  const { dispatch } = useCartContext();
 
+  return (
+    <div className="bg-white shadow-md rounded-xl overflow-hidden hover:shadow-lg transition relative group">
+      <img
+        src={product.thumbnail}
+        alt={product.title}
+        className="w-full h-48 object-cover group-hover:scale-105 transition"
+      />
+      <div className="p-4">
+        <Link href={`/products/${product.id}`}>
+          <h3 className="font-semibold text-lg mb-2 hover:text-blue-600 cursor-pointer">
+            {product.title}
+          </h3>
+        </Link>
+        <p className="text-gray-600 text-sm mb-2 line-clamp-2">
+          {product.description}
+        </p>
+        <div className="flex items-center justify-between">
+          <span className="text-xl font-bold">${product.price}</span>
+          <button
+            onClick={() => dispatch({ type: "ADD_TO_CART", payload: product })}
+            className="bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition"
+          >
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      {/* Badge */}
+      <span className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+        {product.category}
+      </span>
+    </div>
+  );
+};
 
 export default ProductCard;

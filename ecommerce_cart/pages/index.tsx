@@ -5,6 +5,8 @@ import FilterBar from "../components/FilterBar";
 import Pagination from "../components/Pagination";
 import { useProductContext } from "../context/ProductContext";
 import { Product } from "../interfaces/product";
+import Skeleton from "../components/Skeleton";
+
 
 export default function HomePage() {
   const { state, dispatch } = useProductContext();
@@ -34,26 +36,36 @@ export default function HomePage() {
   const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
   return (
     <>
       <Hero />
       <main className="max-w-7xl mx-auto p-4">
         <FilterBar />
-        {loading && <p className="text-center">Loading products...</p>}
         {error && <p className="text-center text-red-500">{error}</p>}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
-          {currentProducts.map((product: Product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-        <Pagination
-          productsPerPage={productsPerPage}
-          totalProducts={products.length}
-          paginate={paginate}
-          currentPage={currentPage}
-        />
+  
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+            {Array.from({ length: productsPerPage }).map((_, i) => (
+              <Skeleton key={i} />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+            {currentProducts.map((product: Product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
+  
+        {!loading && (
+          <Pagination
+            productsPerPage={productsPerPage}
+            totalProducts={products.length}
+            paginate={paginate}
+            currentPage={currentPage}
+          />
+        )}
       </main>
     </>
   );
-}
+  
