@@ -4,14 +4,14 @@ import { useCartContext } from "../context/CartContext";
 export default function CartPage() {
   const { state, removeFromCart, clearCart } = useCartContext();
 
-  // ✅ Calculate total
+  // Calculate total
   const total = state.items.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
 
   const handleCheckout = () => {
-    alert("✅ Checkout successful! (You can connect this to Paystack/Stripe later)");
+    alert("Checkout successful!");
     clearCart();
   };
 
@@ -43,7 +43,7 @@ export default function CartPage() {
             </div>
           ))}
 
-          {/* ✅ Cart Summary */}
+          {/* Cart Summary */}
           <div className="mt-6 flex justify-between items-center">
             <div className="text-lg font-semibold">
               Total: ${total.toFixed(2)}
@@ -57,7 +57,7 @@ export default function CartPage() {
                 Clear Cart
               </button>
 
-              {/* ✅ Checkout Button */}
+              {/* Checkout Button */}
               <button
                 onClick={handleCheckout}
                 className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"

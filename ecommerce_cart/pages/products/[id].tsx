@@ -5,7 +5,7 @@ import { useCartContext } from "../../context/CartContext";
 type Props = { product: Product };
 
 const ProductDetail = ({ product }: Props) => {
-  const { dispatch } = useCartContext();
+  const { addToCart } = useCartContext();
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -18,7 +18,7 @@ const ProductDetail = ({ product }: Props) => {
       <p className="text-gray-600 mb-4">{product.description}</p>
       <span className="text-2xl font-bold mb-4 block">${product.price}</span>
       <button
-        onClick={() => dispatch({ type: "ADD_TO_CART", payload: product })}
+        onClick={() => addToCart(product)}
         className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
       >
         Add to Cart

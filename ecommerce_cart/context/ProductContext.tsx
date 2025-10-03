@@ -9,7 +9,7 @@ interface State {
   error: string | null;
   category: string | null;
   sort: "price-asc" | "price-desc" | null;
-  searchQuery: string; // ✅ NEW
+  searchQuery: string; // NEW
 }
 
 const initialState: State = {
@@ -19,7 +19,7 @@ const initialState: State = {
   error: null,
   category: null,
   sort: null,
-  searchQuery: "", // ✅ NEW
+  searchQuery: "", // NEW
 };
 
 // Actions
@@ -30,7 +30,7 @@ type Action =
   | { type: "SET_ERROR"; payload?: string }
   | { type: "SET_CATEGORY"; payload?: string | null }
   | { type: "SET_SORT"; payload?: State["sort"] }
-  | { type: "SET_SEARCH"; payload: string } // ✅ NEW
+  | { type: "SET_SEARCH"; payload: string } // NEW
   | { type: "RESET" };
 
 // Reducer
@@ -49,7 +49,7 @@ function reducer(state: State, action: Action): State {
     case "SET_SORT":
       return { ...state, sort: action.payload ?? null };
     case "SET_SEARCH":
-      return { ...state, searchQuery: action.payload }; // ✅ handle search
+      return { ...state, searchQuery: action.payload }; //  handle search
     case "RESET":
       return { ...initialState };
     default:
@@ -77,7 +77,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
       result = result.filter((p) => p.category === state.category);
     }
 
-    // ✅ filter by search query
+    // filter by search query
     if (state.searchQuery) {
       const q = state.searchQuery.toLowerCase();
       result = result.filter(

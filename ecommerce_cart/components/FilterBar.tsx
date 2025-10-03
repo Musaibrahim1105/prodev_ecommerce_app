@@ -5,7 +5,7 @@ export default function FilterBar() {
 
   return (
     <div className="flex flex-wrap items-center gap-4 mb-6">
-      {/* 🔍 Search */}
+      {/* Search */}
       <input
         type="text"
         placeholder="Search products..."
@@ -14,7 +14,7 @@ export default function FilterBar() {
         className="border rounded px-3 py-2 w-60"
       />
 
-      {/* 🏷 Category filter */}
+      {/* Category filter */}
       <select
         value={state.category ?? ""}
         onChange={(e) =>
@@ -27,10 +27,10 @@ export default function FilterBar() {
         <option value="laptops">Laptops</option>
         <option value="fragrances">Fragrances</option>
         <option value="groceries">Groceries</option>
-        {/* 👉 you can map dynamically from API categories */}
+        {/* you can map dynamically from API categories */}
       </select>
 
-      {/* 💰 Sort by price */}
+      {/* Sort by price */}
       <select
         value={state.sort ?? ""}
         onChange={(e) =>

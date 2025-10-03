@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image"; // ✅ Import Image component
+import Image from "next/image"; // Import Image component
 import { useCartContext } from "../context/CartContext";
 
 export default function Header() {
@@ -12,7 +12,7 @@ export default function Header() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src="/logo.png" // 👈 place your logo inside /public/logo.png
+            src="/logo.png" // place your logo inside /public/logo.png
             alt="MyStore Logo"
             width={40}
             height={40}
